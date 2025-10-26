@@ -18,8 +18,16 @@ This pattern is especially useful when:
 Use a three-step iterative correction pattern:
 
 1. **Show, don't tell**: Provide the exact error message or failing test output
+   - Include the **full stack trace**, not just the final error line
+   - Add relevant context: input data, environment details, expected vs actual behavior
+   - Copy-paste exactly as displayed—don't paraphrase or summarize
+
 2. **Ask for analysis first**: Request the AI to explain what went wrong before fixing
+   - Forces chain-of-thought reasoning before code generation
+   - Helps you verify the AI understands the root cause
+
 3. **Request targeted fix**: Guide the AI to fix only what's broken, preserving what works
+   - Explicitly ask to "preserve working code" to prevent unnecessary rewrites
 
 This prevents the AI from rewriting working code or hallucinating new bugs.
 
@@ -79,6 +87,8 @@ def calculate_discount(price, discount_percent):
 
 **Output:** `Price after 20% discount: $80.0` ✅
 
+**Note:** This example is intentionally simple to illustrate the pattern. For complex multi-file bugs, apply this pattern iteratively to one component at a time.
+
 ## Notes
 
 **Why this works:**
@@ -95,10 +105,27 @@ def calculate_discount(price, discount_percent):
 - When you need a complete rewrite
 - When the AI's approach is fundamentally wrong (use a different strategy)
 - For trivial syntax errors (just tell the AI directly)
+- When the error message is unclear or misleading (investigate the root cause first before prompting)
+- After 3+ failed iterations (try a different model, approach, or ask a human)
+
+**Common pitfalls:**
+- **AI still hallucinates despite analysis**: Ask it to explain its reasoning step-by-step again, or provide a simpler minimal reproduction
+- **Over-explaining confuses the AI**: Balance detail with clarity—focus on observable behavior, not speculation
+- **Stuck in a loop**: If the AI keeps making the same mistake, explicitly state what it's doing wrong and what success looks like
+- **Multi-file bugs**: Apply this pattern to one component at a time rather than the entire system
 
 **Cost/latency considerations:**
 - This pattern typically takes 2-3 exchanges vs. 1, but saves time by avoiding bug loops
 - Works well with streaming responses since analysis comes before code
+
+**Variations:**
+- **For different error types**: Adapt the analysis questions
+  - Compile-time errors: "What syntax or type issue is causing this?"
+  - Runtime errors: "What input or state triggered this?"
+  - Logical errors: "What assumption or calculation is incorrect?"
+- **For non-code outputs**: Works for SQL queries, config files, API requests
+  - Example: "This SQL query returns 0 rows but should return 5. Analyze why the JOIN condition might be wrong."
+- **For complex codebases**: Narrow scope by asking "Which module/function is most likely responsible?"
 
 ## References
 - [Chain-of-thought prompting paper](https://arxiv.org/abs/2201.11903)

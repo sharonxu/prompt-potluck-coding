@@ -32,8 +32,9 @@ Use a three-step iterative correction pattern:
 This prevents the AI from rewriting working code or hallucinating new bugs.
 
 - Model/Tool versions (be specific):
-  - Model: Claude 3.5 Sonnet (2024-10-22)
+  - Model: Tested with Claude 3.5 Sonnet (2024-10-22); pattern likely works with newer models (e.g., Claude Sonnet 4.5)
   - Tooling: Cursor v0.43, Warp Terminal
+  - Works particularly well when paired with failing tests or test-driven development
 
 - Key prompt pattern:
   ```
@@ -107,6 +108,7 @@ def calculate_discount(price, discount_percent):
 - For trivial syntax errors (just tell the AI directly)
 - When the error message is unclear or misleading (investigate the root cause first before prompting)
 - After 3+ failed iterations (try a different model, approach, or ask a human)
+- When debugging requires understanding system state or timing (race conditions, asynchronous behavior, etc.)
 
 **Common pitfalls:**
 - **AI still hallucinates despite analysis**: Ask it to explain its reasoning step-by-step again, or provide a simpler minimal reproduction
